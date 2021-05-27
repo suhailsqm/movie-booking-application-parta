@@ -1,4 +1,6 @@
 import React from "react";
+import ReactDOM from "react-dom";
+
 
 import './home.css';
 
@@ -6,14 +8,18 @@ import Header from '../../common/header/header.jsx';
 
 //Material UI implementation
 import moviesData from '../../common/moviesData.jsx';
+import Details from "../details/details";
+import { withStyles } from "@material-ui/core/styles";
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import { withStyles } from '@material-ui/core/styles';
+
 //end of Material UI implementation
 
 
 //Adding material UI form filtering movie
+import genres from "../../common/genre";
+import artists from "../../common/artists";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import FormControl from "@material-ui/core/FormControl";
@@ -22,13 +28,13 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 
 
-import genres from "../../common/genre";
+
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemText from "@material-ui/core/ListItemText";
 
-import artists from "../../common/artists";
+
 
 import TextField from "@material-ui/core/TextField";
 
@@ -68,9 +74,10 @@ class Home extends React.Component{
   constructor() {
         super();
         this.state = {
-          movieName: [],
+          movieName: "",
           genres: [],
           artists: [],
+          filteredMovie: moviesData
         };
       }
 
@@ -84,6 +91,20 @@ class Home extends React.Component{
       artistSelectHandler = (event) => {
         this.setState({ artists: event.target.value });
       };
+      movieClickHandler = (movieId) => {
+        ReactDOM.render(
+          <Details movieId={movieId} />,
+          document.getElementById("root")
+        );
+      };
+      handleApply=()=>{
+        var filteredMovie1=moviesData.filter((movie)=>{   console.log(movie.artists.first_name+" "+movie.artists);
+        return (movie.title===this.state.movieName)||(this.state.artists.includes((movie.artists[0].first_name+" "+movie.artists[0].last_name )))||
+        (this.state.artists.includes(movie.artists[1].first_name+" "+movie.artists[1].last_name ))
+      });
+      this.setState({filteredMovie:filteredMovie1})
+      };
+      
       render() {
         const { classes } = this.props;
         return (
@@ -112,8 +133,9 @@ class Home extends React.Component{
                   cols={4}
                   className={classes.gridListMain}
                 >
-                  {moviesData.map((movie) => (
+                  {this.state.filteredMovie.map((movie) => (
                     <GridListTile
+                      onClick={() => this.movieClickHandler(movie.id)}
                       className="released-movie-grid-item"
                       key={"grid" + movie.id}
                     >
@@ -156,7 +178,7 @@ class Home extends React.Component{
                       </InputLabel>
                       <Select
                         multiple
-                        input={<Input id="select-multiple-checkbox" />}
+                        input={<Input id="select-multiple-checkbox-genre" />}
                         renderValue={(selected) => selected.join(",")}
                         value={this.state.genres}
                         onChange={this.genreSelectHandler}
@@ -224,7 +246,7 @@ class Home extends React.Component{
                     <br />
                     <br />
                     <FormControl className={classes.formControl}>
-                      <Button variant="contained" color="primary">
+                      <Button variant="contained" color="primary" onClick={this.handleApply}>
                         APPLY
                       </Button>
                     </FormControl>
