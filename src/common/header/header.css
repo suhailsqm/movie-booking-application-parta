@@ -1,0 +1,31 @@
+.header{
+    background-color: #222;
+    height: 36px;
+    padding: 8px 32px 8px 16px;
+}
+
+
+#image {
+    background-color: #ff7f7f;
+    height: 35px;
+    width: 50px;    
+    animation: tt ;
+    animation-duration: 8s;
+    position: relative;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear; 
+    top: 0;
+    left: 0;
+  }
+
+  @keyframes tt {
+    0% {
+      transform: linear;
+      left: 0px;
+    }
+
+    100% {
+      transform: linear;
+      left: 100%;
+    }
+  }
